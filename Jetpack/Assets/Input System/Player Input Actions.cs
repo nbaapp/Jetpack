@@ -30,7 +30,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Jetpack"",
                     ""type"": ""Button"",
-                    ""id"": ""30e7b0c3-4a1d-4b47-b505-5dde923fed34"",
+                    ""id"": ""8dd84b1f-9eb5-4ddd-923c-98f8e466f0ab"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -39,7 +39,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Wobble"",
                     ""type"": ""Value"",
-                    ""id"": ""60b3cf28-06a1-48c6-a251-ac481a621b4f"",
+                    ""id"": ""0c2f3162-7752-4ce7-bda4-41993a58ca27"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -49,7 +49,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""b631d3c7-3ff2-401a-a715-1eaa63c3a104"",
+                    ""id"": ""6925cebb-dbbe-4fca-9759-d6164a85fe0e"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -60,7 +60,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c21eb86b-115d-4e93-abe2-088dd1b708ef"",
+                    ""id"": ""e155bc51-0a2a-4926-b99e-e6969cfff3fd"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
