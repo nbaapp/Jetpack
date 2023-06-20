@@ -26,12 +26,11 @@ public class Planet : MonoBehaviour
         if (collision.gameObject.layer == 3)
         {
             otherRb = collision.gameObject.GetComponent<Rigidbody2D>();
+            gravitationalForce = (gravityConst * myRb.mass * otherRb.mass) / Mathf.Pow(Vector2.Distance(transform.position, collision.gameObject.transform.position), 2);
+
+            direction = (myRb.transform.position - otherRb.transform.position).normalized;
+
+            otherRb.AddForce(direction * gravitationalForce);
         }
-
-        gravitationalForce = (gravityConst * myRb.mass * otherRb.mass) / Mathf.Pow(Vector2.Distance(transform.position, collision.gameObject.transform.position), 2);
-
-        direction = (myRb.transform.position - otherRb.transform.position).normalized;
-
-        otherRb.AddForce(direction * gravitationalForce);
     }
 }

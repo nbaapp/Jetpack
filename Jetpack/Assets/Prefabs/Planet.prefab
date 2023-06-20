@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4592096343292100975}
   m_Layer: 0
   m_Name: Planet
-  m_TagString: Untagged
+  m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309e49e8b2a1c8f41b7cafadd907fc5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityConst: 100
+  gravityConst: 0
 --- !u!50 &4592096343292100975
 Rigidbody2D:
   serializedVersion: 4

@@ -5,47 +5,52 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public GameObject jetpackBeam;
-    public GameObject planet;
+    //public GameObject planet;
     public DistanceJoint2D tether;
     public Rigidbody2D rb;
     private PlayerInputActions playerInputActions;
     public Camera mainCamera;
+    private GameObject[] Planets;
+    private GameObject nearestPlanet;
 
     public float jetpackForce = 10;
     public float speedCap = 100;
     public float beamOff = 10;
     public float rotateSpeed = 10;
+    public float speed;
+    public float maxFuel = 50;
+    public float fuelLeft;
 
+    private float distanceToTarget;
     private float distance;
+    private float nearestDistance;
 
     // Start is called before the first frame update
     void Start()
     {
+        fuelLeft = maxFuel;
+
         playerInputActions = new PlayerInputActions();
-
         playerInputActions.Player.Enable();
-        //playerInputActions.Player.Jetpack.performed += Jetpack;
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        speed = rb.velocity.magnitude;
     }
 
     private void FixedUpdate()
     {
-        KeyboardWobble();
+        KeyboardWobble(); // rotates player
         //MouseWobble();
-        Jetpack();
-        Lock();
+        Jetpack(); // moves player
+        Lock(); //attatches tether to closest planet
     }
 
     private void Jetpack()
     {
-        if (playerInputActions.Player.Jetpack.inProgress)
+        if (playerInputActions.Player.Jetpack.inProgress && fuelLeft > 0)
         {
             if(rb.velocity.x < speedCap && rb.velocity.y < speedCap)
             {
@@ -55,7 +60,7 @@ public class Player : MonoBehaviour
             {
                 Instantiate(jetpackBeam, transform);
             }
-
+            fuelLeft--;
         }
         else
         {
@@ -79,6 +84,25 @@ public class Player : MonoBehaviour
         Vector2 inputVector = playerInputActions.Player.Wobble.ReadValue<Vector2>();
         rb.angularVelocity = -inputVector.x * rotateSpeed;
     }
+    private void Lock()
+    {
+        if (playerInputActions.Player.Lock.inProgress)
+        {
+            if (tether.enabled == false)
+            {
+                findClosestPlanet();
+                tether.enabled = true;
+                distanceToTarget = Vector2.Distance(transform.position, nearestPlanet.transform.position);
+                tether.distance = distanceToTarget;
+                tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
+            }
+
+        }
+        else
+        {
+            tether.enabled = false;
+        }
+    }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -89,22 +113,24 @@ public class Player : MonoBehaviour
         rb.angularVelocity = 0;
     }
 
-    private void Lock()
+    private void findClosestPlanet()
     {
-        if (playerInputActions.Player.Lock.inProgress)
+        Planets = GameObject.FindGameObjectsWithTag("Planet");
+
+        for(int i = 0; i < Planets.Length; i++)
         {
-            if (tether.enabled == false)
+            distance = Vector2.Distance(transform.position, Planets[i].transform.position);
+            if(i == 0)
             {
-                tether.enabled = true;
-                distance = Vector2.Distance(transform.position, planet.transform.position);
-                tether.distance = distance;
-                tether.connectedBody = planet.GetComponent<Rigidbody2D>();
+                nearestPlanet = Planets[i];
+                nearestDistance = distance;
             }
-            
-        }
-        else
-        {
-            tether.enabled = false;
+            if (distance < nearestDistance)
+            {
+                nearestPlanet = Planets[i];
+                nearestDistance = distance;
+            }
         }
     }
+   
 }
