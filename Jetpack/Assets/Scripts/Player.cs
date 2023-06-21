@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Logic Logic;
     public GameObject jetpackBeam;
     //public GameObject planet;
     public DistanceJoint2D tether;
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     public float speed;
     public float maxFuel = 50;
     public float fuelLeft;
+    public float swingBoost = 10;
 
     private float distanceToTarget;
     private float distance;
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Logic = GameObject.Find("Logic").GetComponent<Logic>();
         fuelLeft = maxFuel;
 
         playerInputActions = new PlayerInputActions();
@@ -60,7 +63,7 @@ public class Player : MonoBehaviour
             {
                 Instantiate(jetpackBeam, transform);
             }
-            fuelLeft--;
+            Logic.DecreaseFuel();
         }
         else
         {
@@ -71,13 +74,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void MouseWobble()
-    {
-        Vector2 inputVector = playerInputActions.Player.Wobble.ReadValue<Vector2>();
-        Vector3 worldPos = mainCamera.ScreenToWorldPoint(inputVector);
-        transform.up = new Vector3(worldPos.x, worldPos.y, 0) - transform.position;
+  //  private void MouseWobble()
+  //  {
+       // Vector2 inputVector = playerInputActions.Player.Wobble.ReadValue<Vector2>();
+        //Vector3 worldPos = mainCamera.ScreenToWorldPoint(inputVector);
+       // transform.up = new Vector3(worldPos.x, worldPos.y, 0) - transform.position;
         //Debug.Log(inputVector.x + "x " + inputVector.y + "y");
-    }
+ //   }
 
     private void KeyboardWobble()
     {
@@ -86,6 +89,8 @@ public class Player : MonoBehaviour
     }
     private void Lock()
     {
+        Vector2 forward;
+        forward = rb.velocity.normalized;
         if (playerInputActions.Player.Lock.inProgress)
         {
             if (tether.enabled == false)
@@ -96,7 +101,7 @@ public class Player : MonoBehaviour
                 tether.distance = distanceToTarget;
                 tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
             }
-
+            rb.velocity = rb.velocity + new Vector2(forward.x, forward.y).normalized * swingBoost;
         }
         else
         {
