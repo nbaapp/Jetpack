@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public SFX sfx;
     public Logic Logic;
     public GameObject jetpackBeam;
     //public GameObject planet;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     public float maxFuel = 50;
     public float fuelLeft;
     public float swingBoost = 10;
+    public float distanceThreshold = 30;
 
     private float distanceToTarget;
     private float distance;
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour
             if (GameObject.FindWithTag("Exhaust") == null)
             {
                 Instantiate(jetpackBeam, transform);
+                sfx.playJetpackSound();
             }
             Logic.DecreaseFuel();
         }
@@ -69,6 +72,7 @@ public class Player : MonoBehaviour
         {
             if (GameObject.FindWithTag("Exhaust") != null)
             {
+                sfx.stopJetpackSound();
                 Destroy(GameObject.FindWithTag("Exhaust"));
             }
         }
@@ -96,12 +100,18 @@ public class Player : MonoBehaviour
             if (tether.enabled == false)
             {
                 findClosestPlanet();
-                tether.enabled = true;
-                distanceToTarget = Vector2.Distance(transform.position, nearestPlanet.transform.position);
-                tether.distance = distanceToTarget;
-                tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
+                if (nearestDistance <= distanceThreshold)
+                {
+                    tether.enabled = true;
+                    distanceToTarget = Vector2.Distance(transform.position, nearestPlanet.transform.position);
+                    tether.distance = distanceToTarget;
+                    tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
+                }
             }
-            rb.velocity = rb.velocity + new Vector2(forward.x, forward.y).normalized * swingBoost;
+            if(tether.enabled == true)
+            {
+                rb.velocity = rb.velocity + new Vector2(forward.x, forward.y).normalized * swingBoost;
+            }
         }
         else
         {

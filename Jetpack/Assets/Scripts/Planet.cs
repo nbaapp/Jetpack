@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
+    private TriggerEast triggerEast;
+    private TriggerNorth triggerNorth;
+    private TriggerSouth triggerSouth;
+    private TriggerWest triggerWest;
     private Rigidbody2D myRb;
-    private Rigidbody2D otherRb;
-    public float gravityConst = 5;
-    private float gravitationalForce;
+    //private Rigidbody2D otherRb;
+    //public float gravityConst = 5;
+    //private float gravitationalForce;
     private float killTimer = 15;
     private float timer;
     public float moveSpeed = 0;
@@ -16,6 +20,11 @@ public class Planet : MonoBehaviour
     void Start()
     {
         myRb = gameObject.GetComponent<Rigidbody2D>();
+        triggerNorth = transform.Find("Trigger North").GetComponent<TriggerNorth>();
+        triggerEast = transform.Find("Trigger East").GetComponent<TriggerEast>();
+        triggerSouth = transform.Find("Trigger South").GetComponent<TriggerSouth>();
+        triggerWest = transform.Find("Trigger West").GetComponent<TriggerWest>();
+
         SetRotation();
     }
 
@@ -24,21 +33,24 @@ public class Planet : MonoBehaviour
     {
         Kill();
         Move();
+        RotatedAround();
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    /*
+    private void OnTriggerStay2D(Collider2D collision) // gravity
     {
         Vector2 direction;
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.layer == 3) // collides with player
         {
             otherRb = collision.gameObject.GetComponent<Rigidbody2D>();
-            gravitationalForce = (gravityConst * myRb.mass * otherRb.mass) / Mathf.Pow(Vector2.Distance(transform.position, collision.gameObject.transform.position), 2);
+            gravitationalForce = (gravityConst * myRb.mass * otherRb.mass) / Mathf.Pow(Vector2.Distance(transform.position, collision.gameObject.transform.position), 2); // calculates gravity
 
-            direction = (myRb.transform.position - otherRb.transform.position).normalized;
+            direction = (myRb.transform.position - otherRb.transform.position).normalized; // gets direction of force
 
-            otherRb.AddForce(direction * gravitationalForce);
+            otherRb.AddForce(direction * gravitationalForce); //applies gravity force
         }
     }
+    */
 
     private void Kill()
     {
@@ -58,5 +70,13 @@ public class Planet : MonoBehaviour
     {
         myRb.angularVelocity += rotateForce * Mathf.Sign(Random.Range(-1, 1));
         transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+    }
+
+    private void RotatedAround()
+    {
+        if(triggerNorth.hitNorth && triggerSouth.hitSouth && triggerEast.hitEast && triggerWest.hitWest)
+        {
+            Destroy(gameObject);
+        }
     }
 }

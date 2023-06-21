@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Logic : MonoBehaviour
 {
+    public SFX sfx;
     public GameObject PlanetSpawner;
     public Player Player;
     public Text fuelLeft;
@@ -35,6 +36,7 @@ public class Logic : MonoBehaviour
     {
         GameOverScreen.SetActive(true);
         PlanetSpawner.SetActive(false);
+        sfx.stopJetpackSound();
         Destroy(Player.gameObject);
     }
 
