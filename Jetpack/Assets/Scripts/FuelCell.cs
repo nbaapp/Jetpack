@@ -5,7 +5,8 @@ using UnityEngine;
 public class FuelCell : MonoBehaviour
 {
     private Logic Logic;
-    private Player Player;
+    private float timer = 0;
+    private float killTimer = 15;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +16,7 @@ public class FuelCell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Kill();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -23,6 +24,15 @@ public class FuelCell : MonoBehaviour
         if(collision.gameObject.layer == 3)
         {
             Logic.ResetFuel();
+            Destroy(gameObject);
+        }
+    }
+
+    private void Kill()
+    {
+        timer += Time.deltaTime;
+        if (timer >= killTimer)
+        {
             Destroy(gameObject);
         }
     }
