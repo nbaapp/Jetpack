@@ -37,6 +37,8 @@ public class Player : MonoBehaviour
 
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable();
+
+        rb.AddForce(Random.onUnitSphere * jetpackForce);
     }
 
     // Update is called once per frame
@@ -47,10 +49,13 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        KeyboardWobble(); // rotates player
-        //MouseWobble();
-        Jetpack(); // moves player
-        Lock(); //attatches tether to closest planet
+        if (!Logic.GameOverScreen.activeInHierarchy)
+        {
+            KeyboardWobble(); // rotates player
+            //MouseWobble();
+            Jetpack(); // moves player
+            Lock(); //attatches tether to closest planet
+        }
     }
 
     private void Jetpack()
@@ -95,27 +100,30 @@ public class Player : MonoBehaviour
     {
         Vector2 forward;
         forward = rb.velocity.normalized;
-        if (playerInputActions.Player.Lock.inProgress)
+        if (tether != null)
         {
-            if (tether.enabled == false)
+            if (playerInputActions.Player.Lock.inProgress)
             {
-                findClosestPlanet();
-                if (nearestDistance <= distanceThreshold)
+                if (tether.enabled == false)
                 {
-                    tether.enabled = true;
-                    distanceToTarget = Vector2.Distance(transform.position, nearestPlanet.transform.position);
-                    tether.distance = distanceToTarget;
-                    tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
+                    findClosestPlanet(); // finds nearest planet
+                    if (nearestDistance <= distanceThreshold)
+                    {
+                        tether.enabled = true;
+                        distanceToTarget = Vector2.Distance(transform.position, nearestPlanet.transform.position);
+                        tether.distance = distanceToTarget;
+                        tether.connectedBody = nearestPlanet.GetComponent<Rigidbody2D>();
+                    }
+                }
+                if (tether.enabled == true)
+                {
+                    rb.velocity = rb.velocity + new Vector2(forward.x, forward.y).normalized * swingBoost;
                 }
             }
-            if(tether.enabled == true)
+            else
             {
-                rb.velocity = rb.velocity + new Vector2(forward.x, forward.y).normalized * swingBoost;
+                tether.enabled = false;
             }
-        }
-        else
-        {
-            tether.enabled = false;
         }
     }
 

@@ -5,8 +5,9 @@ using UnityEngine;
 public class FuelCell : MonoBehaviour
 {
     private Logic Logic;
-    private float timer = 0;
-    private float killTimer = 15;
+    
+    public int initialMoveSpeed = 8;
+    public int moveSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class FuelCell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Kill();
+        Move();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -28,12 +29,16 @@ public class FuelCell : MonoBehaviour
         }
     }
 
-    private void Kill()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        timer += Time.deltaTime;
-        if (timer >= killTimer)
+        if(collision.gameObject.layer == 6)
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Move()
+    {
+        transform.position -= Vector3.right * moveSpeed * Time.deltaTime;
     }
 }

@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class SFX : MonoBehaviour
 {
+    public AudioSource asteroidBoom;
     public AudioSource jetpackSFX;
+
+
     public void playJetpackSound()
     {
         jetpackSFX.Play();
@@ -14,5 +17,11 @@ public class SFX : MonoBehaviour
     {
         jetpackSFX.Stop();
     }
+
+    public void playAsteroidBoom()
+    {
+        asteroidBoom.Play();
+    }
+
 
 }

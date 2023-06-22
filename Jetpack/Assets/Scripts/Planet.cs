@@ -4,26 +4,29 @@ using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
+    private SFX sfx;
     private TriggerEast triggerEast;
     private TriggerNorth triggerNorth;
     private TriggerSouth triggerSouth;
     private TriggerWest triggerWest;
     private Rigidbody2D myRb;
+    private Logic logic;
+    private DistanceJoint2D tether;
     //private Rigidbody2D otherRb;
     //public float gravityConst = 5;
     //private float gravitationalForce;
-    private float killTimer = 15;
-    private float timer;
-    public float moveSpeed = 0;
     public float rotateForce = 10;
     // Start is called before the first frame update
     void Start()
     {
+        sfx = GameObject.Find("SFX Player").GetComponent<SFX>();
+        logic = GameObject.Find("Logic").GetComponent<Logic>();
         myRb = gameObject.GetComponent<Rigidbody2D>();
-        triggerNorth = transform.Find("Trigger North").GetComponent<TriggerNorth>();
-        triggerEast = transform.Find("Trigger East").GetComponent<TriggerEast>();
-        triggerSouth = transform.Find("Trigger South").GetComponent<TriggerSouth>();
-        triggerWest = transform.Find("Trigger West").GetComponent<TriggerWest>();
+        tether = GameObject.Find("Player").GetComponent<DistanceJoint2D>();
+        triggerNorth = transform.parent.transform.Find("Trigger North").GetComponent<TriggerNorth>();
+        triggerEast = transform.parent.transform.Find("Trigger East").GetComponent<TriggerEast>();
+        triggerSouth = transform.parent.transform.Find("Trigger South").GetComponent<TriggerSouth>();
+        triggerWest = transform.parent.transform.Find("Trigger West").GetComponent<TriggerWest>();
 
         SetRotation();
     }
@@ -31,9 +34,10 @@ public class Planet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Kill();
-        Move();
-        RotatedAround();
+        if (!logic.GameOverScreen.activeInHierarchy)
+        {
+            RotatedAround();
+        }
     }
 
     /*
@@ -52,18 +56,13 @@ public class Planet : MonoBehaviour
     }
     */
 
-    private void Kill()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        timer += Time.deltaTime;
-        if (timer >= killTimer)
+        if(collision.gameObject.layer == 6)
         {
             Destroy(gameObject);
+            logic.GameOver();
         }
-    }
-
-    private void Move()
-    {
-        transform.position -= Vector3.right * moveSpeed * Time.deltaTime;
     }
 
     private void SetRotation()
@@ -74,9 +73,16 @@ public class Planet : MonoBehaviour
 
     private void RotatedAround()
     {
-        if(triggerNorth.hitNorth && triggerSouth.hitSouth && triggerEast.hitEast && triggerWest.hitWest)
+        if(tether != null)
         {
-            Destroy(gameObject);
+            if (!tether.enabled && triggerNorth.hitNorth == true && triggerSouth.hitSouth == true && triggerEast.hitEast == true && triggerWest.hitWest == true)
+            {
+                sfx.playAsteroidBoom();
+                logic.IncreaseScore();
+                Destroy(gameObject);
+            }
         }
     }
+
+    
 }

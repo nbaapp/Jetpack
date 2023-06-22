@@ -34,10 +34,13 @@ public class Logic : MonoBehaviour
 
     public void GameOver()
     {
-        GameOverScreen.SetActive(true);
-        PlanetSpawner.SetActive(false);
-        sfx.stopJetpackSound();
-        Destroy(Player.gameObject);
+        if(GameOverScreen.activeInHierarchy == false)
+        {
+            GameOverScreen.SetActive(true);
+            PlanetSpawner.SetActive(false);
+            sfx.stopJetpackSound();
+            Destroy(Player.gameObject);
+        }
     }
 
     public void ResetGame()
